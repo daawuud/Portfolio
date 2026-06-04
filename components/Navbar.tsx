@@ -42,9 +42,6 @@ export function Navbar() {
               </Link>
             );
           })}
-          <Link href="/admin/login" className="ml-2 rounded-full border border-slate-300 px-3 py-2 text-[13px] font-semibold text-slate-700 hover:border-teal-500 hover:text-teal-700">
-            Admin
-          </Link>
         </div>
         <button
           type="button"
@@ -63,9 +60,6 @@ export function Navbar() {
                 {label}
               </Link>
             ))}
-            <Link href="/admin/login" className="rounded-xl px-3 py-3 text-sm font-semibold text-teal-700 hover:bg-teal-50" onClick={() => setOpen(false)}>
-              Admin Login
-            </Link>
           </div>
         </div>
       ) : null}
