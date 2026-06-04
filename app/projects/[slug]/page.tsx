@@ -2,19 +2,20 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
-import { getProjectBySlug, projects } from "@/lib/data/projects";
+import { getPublicProjectBySlug, getPublicProjects } from "@/lib/data/supabaseContent";
 
 type ProjectPageProps = {
   params: Promise<{ slug: string }>;
 };
 
-export function generateStaticParams() {
+export async function generateStaticParams() {
+  const projects = await getPublicProjects();
   return projects.map((project) => ({ slug: project.slug }));
 }
 
 export async function generateMetadata({ params }: ProjectPageProps): Promise<Metadata> {
   const { slug } = await params;
-  const project = getProjectBySlug(slug);
+  const project = await getPublicProjectBySlug(slug);
   return {
     title: project?.title ?? "Project",
     description: project?.description
@@ -23,7 +24,7 @@ export async function generateMetadata({ params }: ProjectPageProps): Promise<Me
 
 export default async function ProjectCaseStudyPage({ params }: ProjectPageProps) {
   const { slug } = await params;
-  const project = getProjectBySlug(slug);
+  const project = await getPublicProjectBySlug(slug);
 
   if (!project) {
     notFound();

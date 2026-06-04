@@ -6,18 +6,23 @@ import { Hero } from "@/components/Hero";
 import { ProjectCard } from "@/components/ProjectCard";
 import { SectionTitle } from "@/components/SectionTitle";
 import { StatCard } from "@/components/StatCard";
-import { blogPosts } from "@/lib/data/blog";
-import { certifications } from "@/lib/data/certifications";
-import { projects } from "@/lib/data/projects";
+import { getPublicBlogPosts, getPublicCertifications, getPublicProjects, getPublicSettings } from "@/lib/data/supabaseContent";
 import { skillCategories } from "@/lib/data/skills";
 
-export default function HomePage() {
-  const featuredProjects = projects.filter((project) => project.featured).slice(0, 3);
-  const featuredCertifications = certifications.filter((certification) => certification.featured).slice(0, 3);
+export default async function HomePage() {
+  const [projectRows, certificationRows, postRows, settings] = await Promise.all([
+    getPublicProjects(),
+    getPublicCertifications(),
+    getPublicBlogPosts(),
+    getPublicSettings()
+  ]);
+  const featuredProjects = (projectRows.some((project) => project.featured) ? projectRows.filter((project) => project.featured) : projectRows).slice(0, 3);
+  const featuredCertifications = (certificationRows.some((certification) => certification.featured) ? certificationRows.filter((certification) => certification.featured) : certificationRows).slice(0, 3);
+  const featuredPosts = postRows.slice(0, 3);
 
   return (
     <>
-      <Hero />
+      <Hero headline={settings.homepage_headline} subtitle={settings.professional_subtitle} resumePath={settings.resume_file_path} />
       <section className="section-padding bg-white">
         <div className="container-page grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
           <StatCard icon={BriefcaseBusiness} value="15+" label="Years Technology Experience" />
@@ -78,7 +83,7 @@ export default function HomePage() {
         <div className="container-page">
           <SectionTitle eyebrow="Learning journal" title="Recent professional learning notes" />
           <div className="mt-10 grid gap-6 md:grid-cols-3">
-            {blogPosts.slice(0, 3).map((post) => <BlogCard key={post.slug} post={post} />)}
+            {featuredPosts.map((post) => <BlogCard key={post.slug} post={post} />)}
           </div>
         </div>
       </section>

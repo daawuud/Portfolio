@@ -1,14 +1,16 @@
 import type { Metadata } from "next";
 import { BlogCard } from "@/components/BlogCard";
 import { SectionTitle } from "@/components/SectionTitle";
-import { blogPosts } from "@/lib/data/blog";
+import { getPublicBlogPosts } from "@/lib/data/supabaseContent";
 
 export const metadata: Metadata = {
   title: "Blog",
   description: "Daud Mohamud learning journal on data analytics, ERP, AI-assisted development, and community technology projects."
 };
 
-export default function BlogPage() {
+export default async function BlogPage() {
+  const blogPosts = await getPublicBlogPosts();
+
   return (
     <section className="section-padding">
       <div className="container-page">

@@ -1,15 +1,22 @@
 import { AdminHeader } from "@/components/AdminHeader";
 import { AdminSidebar } from "@/components/AdminSidebar";
-import { blogPosts } from "@/lib/data/blog";
-import { certifications } from "@/lib/data/certifications";
-import { projects } from "@/lib/data/projects";
+import { getBlogPostRows, getCertificationRows, getContactMessageRows, getProjectsRows, getSettingRows } from "@/lib/admin/queries";
 
-export default function AdminDashboardPage() {
+export default async function AdminDashboardPage() {
+  const [projects, certifications, blogPosts, messages, settings] = await Promise.all([
+    getProjectsRows(),
+    getCertificationRows(),
+    getBlogPostRows(),
+    getContactMessageRows(),
+    getSettingRows()
+  ]);
+
   const stats: { label: string; value: string | number }[] = [
     { label: "Projects", value: projects.length },
     { label: "Certifications", value: certifications.length },
     { label: "Blog posts", value: blogPosts.length },
-    { label: "Contact messages", value: "Supabase" }
+    { label: "Contact messages", value: messages.length },
+    { label: "Settings", value: settings.length }
   ];
 
   return (
@@ -17,7 +24,7 @@ export default function AdminDashboardPage() {
       <div className="container-page grid gap-8 lg:grid-cols-[280px_1fr]">
         <AdminSidebar />
         <div>
-          <AdminHeader title="Portfolio content overview" description="Dashboard shell for managing projects, certifications, blog posts, contact messages, and site settings after Supabase Auth is configured." />
+          <AdminHeader title="Portfolio content overview" description="Live Supabase dashboard for managing projects, certifications, blog posts, contact messages, and site settings." />
           <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
             {stats.map(({ label, value }) => (
               <div key={label} className="card p-5">

@@ -28,7 +28,7 @@ create table if not exists public.projects (
 
 create table if not exists public.certifications (
   id uuid primary key default gen_random_uuid(),
-  title text not null,
+  title text unique not null,
   issuer text not null,
   category text,
   provider text,
@@ -64,6 +64,19 @@ alter table public.certifications enable row level security;
 alter table public.blog_posts enable row level security;
 alter table public.site_settings enable row level security;
 
+drop policy if exists "Public can submit contact messages" on public.contact_messages;
+drop policy if exists "Admins can read contact messages" on public.contact_messages;
+drop policy if exists "Admins can update contact messages" on public.contact_messages;
+drop policy if exists "Admins can delete contact messages" on public.contact_messages;
+drop policy if exists "Public can read projects" on public.projects;
+drop policy if exists "Public can read certifications" on public.certifications;
+drop policy if exists "Public can read published blog posts" on public.blog_posts;
+drop policy if exists "Public can read site settings" on public.site_settings;
+drop policy if exists "Admins can manage projects" on public.projects;
+drop policy if exists "Admins can manage certifications" on public.certifications;
+drop policy if exists "Admins can manage blog posts" on public.blog_posts;
+drop policy if exists "Admins can manage site settings" on public.site_settings;
+
 create policy "Public can submit contact messages"
 on public.contact_messages
 for insert
@@ -83,6 +96,12 @@ to authenticated
 using (true)
 with check (true);
 
+create policy "Admins can delete contact messages"
+on public.contact_messages
+for delete
+to authenticated
+using (true);
+
 create policy "Public can read projects"
 on public.projects
 for select
@@ -100,6 +119,12 @@ on public.blog_posts
 for select
 to anon, authenticated
 using (published = true or auth.role() = 'authenticated');
+
+create policy "Public can read site settings"
+on public.site_settings
+for select
+to anon, authenticated
+using (true);
 
 create policy "Admins can manage projects"
 on public.projects

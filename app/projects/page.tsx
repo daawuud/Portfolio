@@ -2,14 +2,15 @@ import type { Metadata } from "next";
 import { BarChart3, Database, ExternalLink, ServerCog } from "lucide-react";
 import { ProjectCard } from "@/components/ProjectCard";
 import { SectionTitle } from "@/components/SectionTitle";
-import { projects } from "@/lib/data/projects";
+import { getPublicProjects } from "@/lib/data/supabaseContent";
 
 export const metadata: Metadata = {
   title: "Projects",
   description: "Employer-ready portfolio projects by Daud Mohamud across web, data, ERP, community technology, and business systems."
 };
 
-export default function ProjectsPage() {
+export default async function ProjectsPage() {
+  const projects = await getPublicProjects();
   const projectFocus = [
     { label: "Data and analytics", icon: BarChart3, detail: "SQL, Python, Excel, dashboards, and reporting workflows." },
     { label: "Database and ERP", icon: Database, detail: "PostgreSQL, Odoo ERP, business process support, and backup readiness." },

@@ -4,6 +4,15 @@ import { useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
 import { getSupabaseClient } from "@/lib/supabase/client";
 
+function withTimeout<T>(promise: Promise<T>, milliseconds: number) {
+  return Promise.race([
+    promise,
+    new Promise<never>((_, reject) => {
+      window.setTimeout(() => reject(new Error("Login request timed out. Check your Supabase URL, anon key, and internet connection.")), milliseconds);
+    })
+  ]);
+}
+
 export function LoginForm() {
   const router = useRouter();
   const [message, setMessage] = useState("");
@@ -26,14 +35,21 @@ export function LoginForm() {
       return;
     }
 
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    try {
+      const { error } = await withTimeout(supabase.auth.signInWithPassword({ email, password }), 12000);
 
-    if (error) {
-      setMessage(error.message);
+      if (error) {
+        setMessage(error.message);
+        setLoading(false);
+        return;
+      }
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : "Login failed. Please check Supabase Auth and try again.");
       setLoading(false);
       return;
     }
 
+    setMessage("Signed in successfully. Opening dashboard...");
     router.push("/admin/dashboard");
     router.refresh();
   }

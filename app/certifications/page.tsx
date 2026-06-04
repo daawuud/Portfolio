@@ -2,14 +2,15 @@ import type { Metadata } from "next";
 import { Award, BookOpenCheck, Cloud, LineChart } from "lucide-react";
 import { CertificationExplorer } from "@/components/CertificationExplorer";
 import { SectionTitle } from "@/components/SectionTitle";
-import { certifications } from "@/lib/data/certifications";
+import { getPublicCertifications } from "@/lib/data/supabaseContent";
 
 export const metadata: Metadata = {
   title: "Certifications",
   description: "Google Data Analytics, IBM Data Analyst, cloud, AI, and career development certifications by Daud Mohamud."
 };
 
-export default function CertificationsPage() {
+export default async function CertificationsPage() {
+  const certifications = await getPublicCertifications();
   const googleCount = certifications.filter((certification) => certification.provider === "Google").length;
   const ibmCount = certifications.filter((certification) => certification.provider === "IBM").length;
   const otherCount = certifications.filter((certification) => certification.provider === "Other").length;

@@ -1,7 +1,17 @@
 import Link from "next/link";
 import { ArrowRight, Download, Mail } from "lucide-react";
 
-export function Hero() {
+type HeroProps = {
+  headline?: string;
+  subtitle?: string;
+  resumePath?: string;
+};
+
+export function Hero({ headline, subtitle, resumePath }: HeroProps) {
+  const heroHeadline = headline || "Technology Professional, Data Analyst & Database Systems Specialist";
+  const heroSubtitle = subtitle || "Experienced technology professional with over 15 years in database management, data analysis, ERP systems, technical support, and AI-assisted web development. Skilled in SQL, Python, PostgreSQL, Odoo ERP, cloud systems, and modern portfolio/web application development.";
+  const resumeHref = resumePath || "/resume/Daud-Mohamud-Resume.pdf";
+
   return (
     <section className="relative overflow-hidden bg-navy-950 text-white">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(20,184,166,0.28),transparent_35%),linear-gradient(135deg,rgba(10,36,61,1),rgba(6,25,44,1))]" />
@@ -9,10 +19,10 @@ export function Hero() {
         <div>
           <p className="text-sm font-semibold uppercase tracking-widest text-teal-300">Daud Mohamud · Edmonton, Alberta</p>
           <h1 className="mt-5 max-w-4xl text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl">
-            Technology Professional, Data Analyst & Database Systems Specialist
+            {heroHeadline}
           </h1>
           <p className="mt-6 max-w-3xl text-lg leading-8 text-slate-300">
-            Experienced technology professional with over 15 years in database management, data analysis, ERP systems, technical support, and AI-assisted web development. Skilled in SQL, Python, PostgreSQL, Odoo ERP, cloud systems, and modern portfolio/web application development.
+            {heroSubtitle}
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
             <Link href="/resume" className="button-primary">
@@ -24,7 +34,7 @@ export function Hero() {
             <Link href="/contact" className="button-secondary border-white/20 bg-white/10 text-white hover:bg-white hover:text-navy-900">
               <Mail size={18} /> Contact Me
             </Link>
-            <Link href="/resume/Daud-Mohamud-Resume.pdf" className="button-secondary border-white/20 bg-white/10 text-white hover:bg-white hover:text-navy-900">
+            <Link href={resumeHref} className="button-secondary border-white/20 bg-white/10 text-white hover:bg-white hover:text-navy-900">
               <Download size={18} /> Download Resume
             </Link>
           </div>
