@@ -2,16 +2,13 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
-import { getPublicBlogPostBySlug, getPublicBlogPosts } from "@/lib/data/supabaseContent";
+import { getPublicBlogPostBySlug } from "@/lib/data/supabaseContent";
 
 type BlogPageProps = {
   params: Promise<{ slug: string }>;
 };
 
-export async function generateStaticParams() {
-  const blogPosts = await getPublicBlogPosts();
-  return blogPosts.map((post) => ({ slug: post.slug }));
-}
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({ params }: BlogPageProps): Promise<Metadata> {
   const { slug } = await params;

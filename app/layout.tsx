@@ -34,7 +34,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className} suppressHydrationWarning>
-        <Navbar />
+        <Navbar settings={settings} />
         <main>{children}</main>
         <Footer settings={settings} />
       </body>

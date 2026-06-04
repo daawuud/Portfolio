@@ -9,6 +9,7 @@ const defaultSettings = [
   { id: "linkedin_url", key: "linkedin_url", value: "https://linkedin.com/in/dm889", updated_at: null },
   { id: "github_url", key: "github_url", value: "", updated_at: null },
   { id: "resume_file_path", key: "resume_file_path", value: "/resume/Daud-Mohamud-Resume.pdf", updated_at: null },
+  { id: "profile_image_url", key: "profile_image_url", value: "/profile/daud-profile.jpeg", updated_at: null },
   { id: "footer_name", key: "footer_name", value: "Daud Mohamud", updated_at: null },
   { id: "footer_title", key: "footer_title", value: "Data Analyst & Technology Professional", updated_at: null },
   { id: "footer_description", key: "footer_description", value: "Edmonton-based technology professional specializing in data analysis, database systems, ERP workflows, technical support, and AI-assisted web development.", updated_at: null },

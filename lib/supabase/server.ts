@@ -15,6 +15,12 @@ export async function getSupabaseServerClient() {
     return null;
   }
 
+  try {
+    new URL(supabaseUrl);
+  } catch {
+    return null;
+  }
+
   const cookieStore = await cookies();
 
   return createServerClient(supabaseUrl, supabaseAnonKey, {

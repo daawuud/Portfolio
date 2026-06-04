@@ -287,5 +287,7 @@ export async function saveSetting(formData: FormData) {
   await supabase.from("site_settings").upsert({ key, value, updated_at: new Date().toISOString() }, { onConflict: "key" }).throwOnError();
 
   revalidatePath("/");
+  revalidatePath("/", "layout");
+  revalidatePath("/contact");
   revalidatePath("/admin/settings");
 }

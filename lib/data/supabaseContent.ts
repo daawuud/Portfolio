@@ -1,3 +1,4 @@
+import { unstable_noStore as noStore } from "next/cache";
 import { getPublicSupabaseClient } from "@/lib/supabase/public";
 import { blogPosts, type BlogPost } from "@/lib/data/blog";
 import { certifications, type Certification } from "@/lib/data/certifications";
@@ -105,11 +106,16 @@ function mapBlogPost(row: BlogRow): BlogPost {
 }
 
 export async function getPublicProjects() {
+  noStore();
   const supabase = getPublicSupabaseClient();
   if (!supabase) return projects;
-  const { data, error } = await supabase.from("projects").select("*").order("created_at", { ascending: false });
-  if (error || !data?.length) return projects;
-  return (data as ProjectRow[]).map(mapProject);
+  try {
+    const { data, error } = await supabase.from("projects").select("*").order("created_at", { ascending: false });
+    if (error || !data?.length) return projects;
+    return (data as ProjectRow[]).map(mapProject);
+  } catch {
+    return projects;
+  }
 }
 
 export async function getPublicProjectBySlug(slug: string) {
@@ -118,19 +124,29 @@ export async function getPublicProjectBySlug(slug: string) {
 }
 
 export async function getPublicCertifications() {
+  noStore();
   const supabase = getPublicSupabaseClient();
   if (!supabase) return certifications;
-  const { data, error } = await supabase.from("certifications").select("*").order("created_at", { ascending: false });
-  if (error || !data?.length) return certifications;
-  return (data as CertificationRow[]).map(mapCertification);
+  try {
+    const { data, error } = await supabase.from("certifications").select("*").order("created_at", { ascending: false });
+    if (error || !data?.length) return certifications;
+    return (data as CertificationRow[]).map(mapCertification);
+  } catch {
+    return certifications;
+  }
 }
 
 export async function getPublicBlogPosts() {
+  noStore();
   const supabase = getPublicSupabaseClient();
   if (!supabase) return blogPosts;
-  const { data, error } = await supabase.from("blog_posts").select("*").eq("published", true).order("created_at", { ascending: false });
-  if (error || !data?.length) return blogPosts;
-  return (data as BlogRow[]).map(mapBlogPost);
+  try {
+    const { data, error } = await supabase.from("blog_posts").select("*").eq("published", true).order("created_at", { ascending: false });
+    if (error || !data?.length) return blogPosts;
+    return (data as BlogRow[]).map(mapBlogPost);
+  } catch {
+    return blogPosts;
+  }
 }
 
 export async function getPublicBlogPostBySlug(slug: string) {
@@ -139,13 +155,18 @@ export async function getPublicBlogPostBySlug(slug: string) {
 }
 
 export async function getPublicSettings() {
+  noStore();
   const supabase = getPublicSupabaseClient();
   if (!supabase) return {};
-  const { data, error } = await supabase.from("site_settings").select("key,value");
-  if (error || !data?.length) return {};
+  try {
+    const { data, error } = await supabase.from("site_settings").select("key,value");
+    if (error || !data?.length) return {};
 
-  return (data as SettingRow[]).reduce<Record<string, string>>((settings, row) => {
-    if (row.value) settings[row.key] = row.value;
-    return settings;
-  }, {});
+    return (data as SettingRow[]).reduce<Record<string, string>>((settings, row) => {
+      if (row.value) settings[row.key] = row.value;
+      return settings;
+    }, {});
+  } catch {
+    return {};
+  }
 }

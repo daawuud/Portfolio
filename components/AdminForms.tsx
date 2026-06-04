@@ -23,6 +23,28 @@ import type {
 const inputClass = "rounded-xl border border-slate-300 px-4 py-3 outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-100";
 const labelClass = "grid gap-2 text-sm font-semibold text-slate-800";
 
+const settingLabels: Record<string, { label: string; valueLabel?: string; help?: string; type?: string }> = {
+  homepage_headline: { label: "Homepage headline" },
+  professional_subtitle: { label: "Homepage subtitle" },
+  linkedin_url: { label: "LinkedIn URL", type: "url" },
+  github_url: { label: "GitHub URL", type: "url" },
+  resume_file_path: { label: "Resume file path" },
+  profile_image_url: {
+    label: "Navbar profile image URL",
+    valueLabel: "Image URL",
+    help: "Use a site path like /profile/daud-profile.jpeg or a full image URL. The site crops it to 36 x 36px so it will not push the main menu."
+  },
+  footer_name: { label: "Footer name" },
+  footer_title: { label: "Footer title" },
+  footer_description: { label: "Footer description" },
+  footer_email: { label: "Contact email", type: "email" },
+  footer_phone: { label: "Contact phone" },
+  footer_location: { label: "Contact location" },
+  footer_linkedin_url: { label: "Contact LinkedIn URL", type: "url" },
+  footer_github_url: { label: "Contact GitHub URL", type: "url" },
+  footer_copyright: { label: "Footer copyright" }
+};
+
 function Field({ label, name, defaultValue, required = false, type = "text" }: { label: string; name: string; defaultValue?: string | null; required?: boolean; type?: string }) {
   return (
     <label className={labelClass}>
@@ -234,11 +256,30 @@ export function MessageCard({ message }: { message: AdminContactMessageRow }) {
 }
 
 export function SettingForm({ setting }: { setting: AdminSettingRow }) {
+  const metadata = settingLabels[setting.key];
+  const value = setting.value ?? "";
+
   return (
     <form action={saveSetting} className="card grid gap-4 p-5 sm:grid-cols-[220px_1fr_auto] sm:items-end">
-      <Field label="Setting key" name="key" defaultValue={setting.key} required />
-      <Field label="Value" name="value" defaultValue={setting.value} />
-      <button type="submit" className="button-primary">Save</button>
+      {metadata ? (
+        <div className={labelClass}>
+          Setting
+          <div className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-950">{metadata.label}</div>
+          <input type="hidden" name="key" value={setting.key} />
+        </div>
+      ) : (
+        <Field label="Setting key" name="key" defaultValue={setting.key} required />
+      )}
+      <div className="grid gap-2">
+        <Field label={metadata?.valueLabel ?? "Value"} name="value" defaultValue={value} type={metadata?.type ?? "text"} />
+        {metadata?.help ? <p className="text-xs font-medium leading-5 text-slate-500">{metadata.help}</p> : null}
+      </div>
+      <div className="flex items-center gap-3">
+        {setting.key === "profile_image_url" && value ? (
+          <img src={value} alt="Current navbar profile preview" className="h-10 w-10 rounded-lg border border-slate-200 object-cover" />
+        ) : null}
+        <button type="submit" className="button-primary">Save</button>
+      </div>
     </form>
   );
 }

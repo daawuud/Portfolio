@@ -16,16 +16,31 @@ const navItems = [
   ["Contact", "/contact"]
 ];
 
-export function Navbar() {
+const defaultProfileImageUrl = "/profile/daud-profile.jpeg";
+
+export function Navbar({ settings = {} }: { settings?: Record<string, string> }) {
   const [open, setOpen] = useState(false);
+  const [failedImageUrl, setFailedImageUrl] = useState<string | null>(null);
   const pathname = usePathname();
+  const customProfileImageUrl = settings.profile_image_url;
+  const profileImageUrl = customProfileImageUrl && failedImageUrl !== customProfileImageUrl ? customProfileImageUrl : defaultProfileImageUrl;
+  const showProfileImage = failedImageUrl !== profileImageUrl;
 
   return (
     <header className="sticky top-0 z-50 border-b border-slate-200/80 bg-white/95 backdrop-blur">
       <nav className="container-page flex h-[60px] min-h-[60px] items-center justify-between" aria-label="Primary navigation">
-        <Link href="/" className="flex items-center gap-3" onClick={() => setOpen(false)}>
-          <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-navy-900 text-xs font-bold text-white">DM</span>
-          <span className="text-sm font-bold text-slate-950">Daud Mohamud</span>
+        <Link href="/" className="flex min-w-0 items-center gap-3" onClick={() => setOpen(false)}>
+          {showProfileImage ? (
+            <img
+              src={profileImageUrl}
+              alt="Daud Mohamud profile"
+              className="h-9 w-9 shrink-0 rounded-lg border border-slate-200 object-cover"
+              onError={() => setFailedImageUrl(profileImageUrl)}
+            />
+          ) : (
+            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-navy-900 text-xs font-bold text-white">DM</span>
+          )}
+          <span className="truncate text-sm font-bold text-slate-950">Daud Mohamud</span>
         </Link>
         <div className="hidden items-center gap-0.5 lg:flex">
           {navItems.map(([label, href]) => {
